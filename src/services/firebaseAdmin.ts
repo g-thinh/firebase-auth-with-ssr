@@ -10,7 +10,7 @@ import { getAuth } from "firebase-admin/auth";
 
 const credentials: ServiceAccount = {
   projectId: process.env.projectID,
-  privateKey: process.env.privateKey,
+  privateKey: process.env.privateKey.replace(/\\n/g, "\n"),
   clientEmail: process.env.clientEmail,
 };
 
