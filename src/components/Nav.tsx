@@ -29,7 +29,7 @@ export default function Nav() {
             },
           }}
         >
-          Simple Chat.
+          Simple Firebase Auth.
         </Link>
         <Grid
           sx={{
@@ -60,7 +60,7 @@ export default function Nav() {
                 </Button>
               </>
             ) : (
-              <Link as={Button} href="/">
+              <Link as={Button} href="/login">
                 Login
               </Link>
             )}

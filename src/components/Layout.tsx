@@ -1,9 +1,8 @@
-import { Flex } from "@chakra-ui/react";
+import { Flex, Progress } from "@chakra-ui/react";
 import Nav from "./Nav";
 import { useAuth } from "contexts/AuthContext";
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
-  const { user } = useAuth();
   return (
     <Flex
       sx={{
