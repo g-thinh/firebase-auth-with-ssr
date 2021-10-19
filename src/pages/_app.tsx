@@ -1,15 +1,25 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import theme from "styles/theme";
-import { AuthProvider } from "contexts/AuthContext";
+import { ChakraProvider, Progress } from "@chakra-ui/react";
 import Layout from "components/Layout";
+import { AuthProvider } from "contexts/AuthContext";
+import useLoading from "hooks/useLoading";
+import theme from "styles/theme";
 
 function MyApp({ Component, pageProps }) {
+  const { loading } = useLoading();
+
   return (
     <AuthProvider>
       <ChakraProvider theme={theme}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
+        {loading && (
+          <Progress
+            colorScheme="teal"
+            size="xs"
+            isIndeterminate
+            width="100%"
+            sx={{ position: "fixed", top: 0, left: 0 }}
+          />
+        )}
+        <Layout>{!loading && <Component {...pageProps} />}</Layout>
       </ChakraProvider>
     </AuthProvider>
   );
