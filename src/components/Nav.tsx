@@ -10,10 +10,11 @@ import {
 import Link from "components/Link";
 import { useAuth } from "contexts/AuthContext";
 import { FiMoon, FiSun } from "react-icons/fi";
+import { signUserOut } from "utils/firebaseHelpers";
 
 export default function Nav() {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { user, signUserOut } = useAuth();
+  const { user } = useAuth();
 
   return (
     <Container maxW="100%" px={4} py={2}>

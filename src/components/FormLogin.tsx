@@ -6,16 +6,12 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-import { useAuth } from "contexts/AuthContext";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import Router from "next/router";
 import { useForm } from "react-hook-form";
 import { firebaseAuth } from "services/firebase";
-
-export type UserForm = {
-  email: string;
-  password: string;
-};
+import * as Api from "types/api";
+import { requestSession } from "utils/apiHelpers";
 
 export default function FormLogin() {
   const {
@@ -23,24 +19,16 @@ export default function FormLogin() {
     register,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<UserForm>();
+  } = useForm<Api.UserForm>();
 
-  const { setUser } = useAuth();
-
-  async function signUserIn({ email, password }: UserForm) {
+  async function signUserIn({ email, password }: Api.UserForm) {
     return signInWithEmailAndPassword(firebaseAuth, email, password)
       .then(async (userCredential) => {
         const user = userCredential.user;
-        setUser(user);
-        const token = await user.getIdToken();
-        await fetch("/api/session", {
-          method: "POST",
-          headers: {
-            token: token,
-          },
-        });
-
-        Router.push("/authenticated");
+        const response = await requestSession(user);
+        if (response.success) {
+          Router.push("/authenticated");
+        }
       })
       .catch((error) => {
         console.log("FORM LOGIN ERROR", error);

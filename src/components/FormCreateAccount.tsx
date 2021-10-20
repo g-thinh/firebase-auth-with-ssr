@@ -6,12 +6,11 @@ import {
   FormLabel,
   Input,
 } from "@chakra-ui/react";
-import { useForm } from "react-hook-form";
-import type { UserForm } from "components/FormLogin";
-import { useAuth } from "contexts/AuthContext";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { firebaseAuth } from "services/firebase";
 import Router from "next/router";
+import { useForm } from "react-hook-form";
+import { firebaseAuth } from "services/firebase";
+import * as Api from "types/api";
 
 export default function FormCreateAccount() {
   const {
@@ -19,15 +18,11 @@ export default function FormCreateAccount() {
     register,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<UserForm>();
+  } = useForm<Api.UserForm>();
 
-  const { setUser } = useAuth();
-
-  async function createUser({ email, password }: UserForm) {
+  async function createUser({ email, password }: Api.UserForm) {
     return createUserWithEmailAndPassword(firebaseAuth, email, password)
-      .then(async (userCredential) => {
-        const newUser = userCredential.user;
-        setUser(newUser);
+      .then(() => {
         Router.push("/authenticated");
       })
       .catch((error) => {

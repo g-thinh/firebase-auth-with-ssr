@@ -1,9 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { adminAuth } from "services/firebaseAdmin";
+import type { Session } from "types/api";
 
-export default async function handler(
+export default async function createUserSession(
   req: NextApiRequest,
-  res: NextApiResponse
+  res: NextApiResponse<Session>
 ) {
   const { method } = req;
 
@@ -25,14 +26,19 @@ export default async function handler(
               "Set-Cookie",
               `session=${sessionCookie};Path=/;HttpOnly;Max-Age=${expiresIn};`
             );
-            res.status(200).json({});
+            res.status(200).json({
+              success: true,
+              message: "User has been verified",
+            });
           });
       }
     }
 
     default: {
       res.setHeader("Allow", ["POST"]);
-      res.status(405).json({ error: `Method ${method} Not Allowed` });
+      res
+        .status(405)
+        .json({ success: false, message: `Method ${method} Not Allowed` });
       return;
     }
   }
