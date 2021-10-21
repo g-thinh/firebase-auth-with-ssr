@@ -7,13 +7,11 @@ export default async function createUserSession(
   res: NextApiResponse<Session>
 ) {
   const { method } = req;
-
   const expiresIn = 60 * 60 * 24 * 5 * 1000; // 5 days in ms
 
   switch (method) {
     case "POST": {
       const { token } = req.headers;
-
       const verifiedToken = await adminAuth.verifyIdToken(token as string);
 
       if (verifiedToken) {

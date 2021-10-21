@@ -19,7 +19,9 @@ function MyApp({ Component, pageProps }) {
             sx={{ position: "fixed", top: 0, left: 0 }}
           />
         )}
-        <Layout>{!loading && <Component {...pageProps} />}</Layout>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ChakraProvider>
     </AuthProvider>
   );

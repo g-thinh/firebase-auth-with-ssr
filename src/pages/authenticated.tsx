@@ -1,4 +1,10 @@
-import { Container, Heading, Text, VStack } from "@chakra-ui/react";
+import {
+  Container,
+  Heading,
+  Text,
+  VStack,
+  useColorMode,
+} from "@chakra-ui/react";
 import { useAuth } from "contexts/AuthContext";
 import { GetServerSidePropsContext, InferGetStaticPropsType } from "next";
 import { adminAuth } from "services/firebaseAdmin";
@@ -24,14 +30,23 @@ export async function getServerSideProps({ req }: GetServerSidePropsContext) {
 export default function Authenticated(
   props: InferGetStaticPropsType<typeof getServerSideProps>
 ) {
+  const { colorMode } = useColorMode();
   const { user } = useAuth();
 
   return (
     <Container>
-      <Heading mb={4} textAlign="center">
-        Welcome Authenticated User!
+      <Heading as="h1" mb={6} textAlign="center">
+        Hello Authenticated User!
       </Heading>
-      <VStack my={4} spacing="16px" align="stretch">
+      <VStack
+        my={4}
+        spacing="16px"
+        align="stretch"
+        bg={colorMode === "dark" ? "gray.700" : "gray.200"}
+        p={4}
+        borderRadius={12}
+        boxShadow="md"
+      >
         {user && (
           <>
             <Text fontSize="xl">Email: {user.email}</Text>

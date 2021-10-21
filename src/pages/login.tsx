@@ -40,7 +40,9 @@ export default function Home() {
   return (
     <Container>
       <Container m="auto">
-        <Heading textAlign="center">Login Page</Heading>
+        <Heading as="h1" mb={6} textAlign="center">
+          Login Page
+        </Heading>
         <Tabs
           isFitted
           colorScheme="teal"
