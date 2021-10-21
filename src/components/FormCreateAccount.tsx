@@ -11,6 +11,7 @@ import Router from "next/router";
 import { useForm } from "react-hook-form";
 import { firebaseAuth } from "services/firebase";
 import * as Api from "types/api";
+import { requestSession } from "utils/apiHelpers";
 
 export default function FormCreateAccount() {
   const {
@@ -22,8 +23,12 @@ export default function FormCreateAccount() {
 
   async function createUser({ email, password }: Api.UserForm) {
     return createUserWithEmailAndPassword(firebaseAuth, email, password)
-      .then(() => {
-        Router.push("/authenticated");
+      .then(async (userCredential) => {
+        const user = userCredential.user;
+        const response = await requestSession(user);
+        if (response.success) {
+          Router.push("/authenticated");
+        }
       })
       .catch((error) => {
         setError("email", {
