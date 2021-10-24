@@ -11,7 +11,6 @@ import Router from "next/router";
 import { useForm } from "react-hook-form";
 import { firebaseAuth } from "services/firebase";
 import * as Api from "types/api";
-import { requestSession } from "utils/apiHelpers";
 
 export default function FormLogin() {
   const {
@@ -23,20 +22,13 @@ export default function FormLogin() {
 
   async function signUserIn({ email, password }: Api.UserForm) {
     return signInWithEmailAndPassword(firebaseAuth, email, password)
-      .then(async (userCredential) => {
-        const user = userCredential.user;
-        const response = await requestSession(user);
-        if (response.success) {
-          Router.push("/authenticated");
-        }
-      })
-      .catch((error) => {
-        console.log("FORM LOGIN ERROR", error);
+      .then(() => Router.push("/authenticated"))
+      .catch((error) =>
         setError("email", {
           type: "manual",
           message: error.message,
-        });
-      });
+        })
+      );
   }
 
   return (

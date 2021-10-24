@@ -1,29 +1,28 @@
 import createContext from "contexts/createContext";
-import { onAuthStateChanged, User } from "firebase/auth";
+import { onIdTokenChanged, User } from "firebase/auth";
 import { useEffect, useState } from "react";
+import nookies from "nookies";
 import { firebaseAuth } from "services/firebase";
 
 type AuthContext = {
   user: User | null;
-  setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  isAuthenticating: boolean;
-  setIsAuthenticating: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const [useAuth, CtxProvider] = createContext<AuthContext>();
 
 export function AuthProvider({ children }: React.PropsWithChildren<{}>) {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(firebaseAuth, (userState) => {
+    const unsubscribe = onIdTokenChanged(firebaseAuth, async (userState) => {
       if (userState) {
+        const expiresIn = 60 * 60 * 24 * 5; //expires in 5 days
+        const token = await userState.getIdToken();
         setUser(userState);
-        setIsAuthenticating(false);
+        nookies.set(undefined, "token", token, { maxAge: expiresIn });
       } else {
         setUser(null);
-        setIsAuthenticating(false);
+        nookies.destroy(null, "token", {});
       }
     });
 
@@ -34,12 +33,9 @@ export function AuthProvider({ children }: React.PropsWithChildren<{}>) {
     <CtxProvider
       value={{
         user,
-        setUser,
-        isAuthenticating,
-        setIsAuthenticating,
       }}
     >
-      {!isAuthenticating && children}
+      {children}
     </CtxProvider>
   );
 }

@@ -5,7 +5,6 @@ import Router from "next/router";
 export async function signUserOut() {
   signOut(firebaseAuth)
     .then(async () => {
-      await fetch("/api/logout");
       Router.push("/");
     })
     .catch((error: AuthError) => {

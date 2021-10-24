@@ -2,28 +2,24 @@ import {
   Container,
   Heading,
   Text,
-  VStack,
   useColorMode,
+  VStack,
 } from "@chakra-ui/react";
-import { useAuth } from "contexts/AuthContext";
 import { GetServerSidePropsContext, InferGetStaticPropsType } from "next";
+import nookies from "nookies";
 import { adminAuth } from "services/firebaseAdmin";
 
-export async function getServerSideProps({ req }: GetServerSidePropsContext) {
+export async function getServerSideProps(context: GetServerSidePropsContext) {
   try {
-    const sessionCookie: string = req.cookies.session ?? "";
-    const user = await adminAuth.verifySessionCookie(sessionCookie, true);
+    const cookies = nookies.get(context);
+    const token = await adminAuth.verifyIdToken(cookies.token);
+
     return {
-      props: { user },
+      props: { token },
     };
   } catch (error) {
-    console.log("CATCH ERROR", error);
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
+    context.res.writeHead(302, { Location: "/login" }).end();
+    return { props: {} };
   }
 }
 
@@ -31,7 +27,7 @@ export default function Authenticated(
   props: InferGetStaticPropsType<typeof getServerSideProps>
 ) {
   const { colorMode } = useColorMode();
-  const { user } = useAuth();
+  const { email, uid } = props.token;
 
   return (
     <Container>
@@ -47,13 +43,8 @@ export default function Authenticated(
         borderRadius={12}
         boxShadow="md"
       >
-        {user && (
-          <>
-            <Text fontSize="xl">Email: {user.email}</Text>
-            <Text fontSize="xl">Display Name: {user.displayName}</Text>
-            <Text fontSize="xl">UID: {user.uid}</Text>
-          </>
-        )}
+        <Text fontSize="xl">Email: {email}</Text>
+        <Text fontSize="xl">UID: {uid}</Text>
       </VStack>
     </Container>
   );

@@ -1,6 +1,5 @@
-import { Flex, Progress } from "@chakra-ui/react";
+import { Flex } from "@chakra-ui/react";
 import Nav from "components/Nav";
-import { useAuth } from "contexts/AuthContext";
 import Footer from "components/Footer";
 
 export default function Layout({ children }: React.PropsWithChildren<{}>) {
