@@ -1,34 +1,39 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Firebase Authentication With SSR
 
 ## Getting Started
 
-First, run the development server:
+To install all required dependencies, run the following command at the root level of the project.
 
 ```bash
-npm run dev
+npm run install
 # or
-yarn dev
+yarn install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Introduction
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+This is the boilerplate code needed to create a user authentication flow with Firebase that enables server-side validation and generation of a user's ID token and session cookie respectively. This will allow for user validation on both the client-side and on the server-side through `getServerSideProps` to fetch additional data from the Firestore or Realtime Database.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- When a user sign's in or creates an account, the API route `/api/session` will validate the incoming ID token and will generate a session cookie to the client with `createSessionCookie()`, which is made possible on the server side with Firebase's Admin SDK for Node.js environments.
 
-## Learn More
+- The user will then be redirected to a protected route that verifies the cookie with the Firebase API method `verifyCookieSession()` within a page's `getServerSideProps` call.
 
-To learn more about Next.js, take a look at the following resources:
+- The user's authenticated data will be persisted on the frontend via an `AuthContext` provider.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Logging out will also clear the cookie from local storage, with the API route `/api/logout`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## Notes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Built with [Chakra-UI](https://chakra-ui.com/)
+- Using [react-hook-forms](https://react-hook-form.com/) for handling login forms
+- Using Firebase's latest [modular API](https://firebase.google.com/docs/web/modular-upgrade)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+---
+
+## Try the Demo
+
+Deployed on Vercel, the live demo can be found [here](https://firebase-auth-with-ssr.vercel.app/):
