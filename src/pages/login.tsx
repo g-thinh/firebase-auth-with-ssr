@@ -9,32 +9,6 @@ import {
 } from "@chakra-ui/react";
 import FormCreateAccount from "components/FormCreateAccount";
 import FormLogin from "components/FormLogin";
-import { GetServerSidePropsContext } from "next";
-import { adminAuth } from "services/firebaseAdmin";
-
-export async function getServerSideProps({ req }: GetServerSidePropsContext) {
-  try {
-    const sessionCookie: string = req.cookies.session ?? "";
-    const user = await adminAuth.verifySessionCookie(sessionCookie);
-
-    if (user) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
-
-    return {
-      props: {},
-    };
-  } catch (error) {
-    return {
-      props: {},
-    };
-  }
-}
 
 export default function Home() {
   return (
